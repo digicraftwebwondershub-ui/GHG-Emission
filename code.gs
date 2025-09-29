@@ -184,12 +184,12 @@ function sortByMonth(a, b) {
 
 /**
  * Fetches and processes dashboard data based on selected filters.
- * @param {string} selectedMonth - The month to filter by (e.g., "January 1-31, 2025").
- * @param {string} selectedPlant - The plant to filter by (e.g., "Polyfoam Valenzuela").
- * @param {string} selectedYear - The year to filter by (e.g., "2025").
+ * @param {string[]} selectedMonths - The months to filter by.
+ * @param {string[]} selectedPlants - The plants to filter by.
+ * @param {string[]} selectedYears - The years to filter by.
  * @returns {Object} Processed data for dashboard components.
 */
-function getDashboardData(selectedMonth, selectedPlant, selectedYear) {
+function getDashboardData(selectedMonths, selectedPlants, selectedYears) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const ghgSheet = ss.getSheetByName('GHG Calculation');
 
@@ -218,9 +218,9 @@ function getDashboardData(selectedMonth, selectedPlant, selectedYear) {
     const parsedMonth = parseMonthYearString(month);
     const rowYear = parsedMonth.year ? parsedMonth.year.toString() : null; // Ensure rowYear is string or null
 
-    const matchesMonth = (selectedMonth === 'All Months' || month === selectedMonth);
-    const matchesPlant = (selectedPlant === 'All Plants' || plant === selectedPlant);
-    const matchesYear = (selectedYear === 'All Years' || rowYear === selectedYear); // Compare string with string
+    const matchesMonth = selectedMonths.includes('All Months') || selectedMonths.includes(month);
+    const matchesPlant = selectedPlants.includes('All Plants') || selectedPlants.includes(plant);
+    const matchesYear = selectedYears.includes('All Years') || (rowYear && selectedYears.includes(rowYear));
 
     return matchesMonth && matchesPlant && matchesYear;
   });

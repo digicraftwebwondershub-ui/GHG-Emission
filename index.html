@@ -99,6 +99,99 @@
       border-color: var(--main-green); /* Darker green on hover */
     }
 
+    /* Custom Multi-select Dropdown CSS */
+    .multi-select-container {
+      position: relative;
+      width: 220px; /* Adjust width as needed */
+      background-color: #eaf5ee;
+      border-radius: 8px;
+      border: 1px solid #cce2d6;
+    }
+    .select-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none; /* Prevent text selection */
+      transition: border-color 0.3s ease;
+    }
+    .multi-select-container:hover .select-btn {
+      border-color: var(--main-green);
+    }
+    .btn-text {
+      font-size: 1rem;
+      color: var(--main-green);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-right: 5px;
+    }
+    .arrow-dwn {
+      font-size: 12px;
+      color: var(--main-green);
+      transition: transform 0.3s ease;
+    }
+    .select-btn.open .arrow-dwn {
+      transform: rotate(-180deg);
+    }
+    .list-items {
+      display: none;
+      position: absolute;
+      top: 105%;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1000;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #e0e0e0;
+    }
+    .list-items.open {
+      display: block;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      cursor: pointer;
+      list-style: none;
+      transition: background-color 0.2s ease;
+    }
+    .item:hover {
+      background-color: var(--main-green-light-hover);
+    }
+    .checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #b3b3b3;
+      border-radius: 4px;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .checkbox .fa-check {
+      color: white;
+      font-size: 10px;
+      display: none; /* Hidden by default */
+    }
+    .item.checked .checkbox {
+      background-color: var(--main-green);
+      border-color: var(--main-green);
+    }
+    .item.checked .checkbox .fa-check {
+      display: block; /* Show checkmark when item is checked */
+    }
+    .item-text {
+      font-size: 1rem;
+      color: #34495e;
+    }
+
 
     .section-nav-buttons {
       margin-left: auto; /* Push buttons to the right */
@@ -698,21 +791,39 @@
     <div class="filters">
       <div class="filter-group">
         <label for="monthFilter">Month Coverage:</label>
-        <select id="monthFilter">
-          <option value="All Months">All Months</option>
-        </select>
+        <div class="multi-select-container" id="monthFilterContainer">
+          <div class="select-btn" id="monthFilterBtn">
+            <span class="btn-text" id="monthBtnText">All Months</span>
+            <span class="arrow-dwn"><i class="fas fa-chevron-down"></i></span>
+          </div>
+          <div class="list-items" id="monthListItems">
+            <!-- Checkboxes will be populated here by JS -->
+          </div>
+        </div>
       </div>
       <div class="filter-group">
         <label for="yearFilter">Year Coverage:</label>
-        <select id="yearFilter">
-          <option value="All Years">All Years</option>
-        </select>
+        <div class="multi-select-container" id="yearFilterContainer">
+          <div class="select-btn" id="yearFilterBtn">
+            <span class="btn-text" id="yearBtnText">All Years</span>
+            <span class="arrow-dwn"><i class="fas fa-chevron-down"></i></span>
+          </div>
+          <div class="list-items" id="yearListItems">
+            <!-- Checkboxes will be populated here by JS -->
+          </div>
+        </div>
       </div>
       <div class="filter-group">
         <label for="plantFilter">Plant:</label>
-        <select id="plantFilter">
-          <option value="All Plants">All Plants</option>
-        </select>
+        <div class="multi-select-container" id="plantFilterContainer">
+          <div class="select-btn" id="plantFilterBtn">
+            <span class="btn-text" id="plantBtnText">All Plants</span>
+            <span class="arrow-dwn"><i class="fas fa-chevron-down"></i></span>
+          </div>
+          <div class="list-items" id="plantListItems">
+            <!-- Checkboxes will be populated here by JS -->
+          </div>
+        </div>
       </div>
       <div class="section-nav-buttons">
         <button id="btn-total-ghg" onclick="scrollToSection('total-ghg-section')">Total GHG</button>
@@ -1136,10 +1247,23 @@
     google.charts.setOnLoadCallback(loadInitialData);
 
 
-    // Get references to DOM elements
-    const monthFilter = document.getElementById('monthFilter');
-    const yearFilter = document.getElementById('yearFilter'); // New year filter
-    const plantFilter = document.getElementById('plantFilter');
+    // Get references to DOM elements for multi-select dropdowns
+    const monthFilterContainer = document.getElementById('monthFilterContainer');
+    const yearFilterContainer = document.getElementById('yearFilterContainer');
+    const plantFilterContainer = document.getElementById('plantFilterContainer');
+
+    const monthFilterBtn = document.getElementById('monthFilterBtn');
+    const yearFilterBtn = document.getElementById('yearFilterBtn');
+    const plantFilterBtn = document.getElementById('plantFilterBtn');
+
+    const monthListItems = document.getElementById('monthListItems');
+    const yearListItems = document.getElementById('yearListItems');
+    const plantListItems = document.getElementById('plantListItems');
+
+    const monthBtnText = document.getElementById('monthBtnText');
+    const yearBtnText = document.getElementById('yearBtnText');
+    const plantBtnText = document.getElementById('plantBtnText');
+
     const loadingSpinner = document.getElementById('loadingSpinner');
     const errorMessage = document.getElementById('errorMessage');
     const backToTopBtn = document.getElementById("backToTopBtn");
@@ -1194,15 +1318,36 @@
      */
     function updateDashboard() {
         showLoading();
-        const selectedMonth = monthFilter.value;
-        const selectedPlant = plantFilter.value;
-        const selectedYear = yearFilter.value; // Get selected year
 
+        const getSelectedOptions = (listItems, allTextDefault) => {
+            const allOption = listItems.querySelector('.item[data-value="All"]');
+            if (allOption && allOption.classList.contains('checked')) {
+                return [allTextDefault];
+            }
+
+            const selected = [];
+            const checkedItems = listItems.querySelectorAll('.item.checked');
+            checkedItems.forEach(item => {
+                if (item.dataset.value !== "All") {
+                    selected.push(item.dataset.value);
+                }
+            });
+
+            if (selected.length === 0) {
+                 return [allTextDefault];
+            }
+
+            return selected;
+        };
+
+        const selectedMonths = getSelectedOptions(monthListItems, 'All Months');
+        const selectedYears = getSelectedOptions(yearListItems, 'All Years');
+        const selectedPlants = getSelectedOptions(plantListItems, 'All Plants');
 
         google.script.run
             .withSuccessHandler(renderDashboard)
             .withFailureHandler(showError)
-            .getDashboardData(selectedMonth, selectedPlant, selectedYear); // Pass selected year
+            .getDashboardData(selectedMonths, selectedPlants, selectedYears);
     }
 
 
@@ -1232,43 +1377,115 @@
             .getFilterData();
     }
 
+    function setupMultiSelect(container, btn, list, btnText, allText) {
+        btn.addEventListener('click', () => {
+            // Close other dropdowns
+            document.querySelectorAll('.list-items.open').forEach(otherList => {
+                if (otherList !== list) {
+                    otherList.classList.remove('open');
+                    otherList.previousElementSibling.classList.remove('open');
+                }
+            });
+            // Toggle current dropdown
+            list.classList.toggle('open');
+            btn.classList.toggle('open');
+        });
+
+        list.addEventListener('click', (e) => {
+            const item = e.target.closest('.item');
+            if (!item) return;
+
+            const isAllButton = item.dataset.value === 'All';
+            const allButton = list.querySelector('.item[data-value="All"]');
+
+            if (isAllButton) {
+                // If "All" is clicked, toggle it. If it becomes checked, uncheck all others.
+                item.classList.toggle('checked');
+                if (item.classList.contains('checked')) {
+                    list.querySelectorAll('.item').forEach(child => {
+                        if(child !== item) child.classList.remove('checked');
+                    });
+                }
+            } else {
+                // If any other item is clicked, toggle it.
+                item.classList.toggle('checked');
+                // If it was just checked, uncheck "All".
+                if (item.classList.contains('checked')) {
+                    if(allButton) allButton.classList.remove('checked');
+                }
+            }
+
+            // If no items are checked after a click, check "All".
+            const checkedItems = list.querySelectorAll('.item.checked');
+            if (checkedItems.length === 0 && allButton) {
+                allButton.classList.add('checked');
+            }
+
+            // Update button text
+            const finalCheckedItems = list.querySelectorAll('.item.checked');
+            if (finalCheckedItems.length === 1 && finalCheckedItems[0].dataset.value === 'All') {
+                btnText.textContent = allText;
+            } else if (finalCheckedItems.length > 1) {
+                btnText.textContent = `${finalCheckedItems.length} selected`;
+            } else if (finalCheckedItems.length === 1) {
+                btnText.textContent = finalCheckedItems[0].querySelector('.item-text').textContent;
+            } else {
+                btnText.textContent = allText; // Fallback
+            }
+
+            // Debounce updateDashboard call
+            clearTimeout(window.dashboardUpdateTimeout);
+            window.dashboardUpdateTimeout = setTimeout(updateDashboard, 500);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) {
+                list.classList.remove('open');
+                btn.classList.remove('open');
+            }
+        });
+    }
+
 
     /**
      * Populates the month and plant filter dropdowns.
      * @param {Object} filterData - Object containing arrays of unique plants, months, and years.
      */
     function populateFilters(filterData) {
-        monthFilter.innerHTML = '<option value="All Months">All Months</option>';
-        filterData.months.forEach(month => {
-            const option = document.createElement('option');
-            option.value = month;
-            option.textContent = month;
-            monthFilter.appendChild(option);
-        });
+        const createItems = (list, items, allText) => {
+            list.innerHTML = ''; // Clear existing items
 
+            // Add 'All' option first
+            let allItem = document.createElement('li');
+            allItem.className = 'item checked'; // Checked by default
+            allItem.dataset.value = 'All';
+            allItem.innerHTML = `
+                <span class="checkbox"><i class="fas fa-check"></i></span>
+                <span class="item-text">${allText}</span>
+            `;
+            list.appendChild(allItem);
 
-        yearFilter.innerHTML = '<option value="All Years">All Years</option>'; // Populate year filter
-        filterData.years.forEach(year => {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            yearFilter.appendChild(option);
-        });
+            items.forEach(value => {
+                let item = document.createElement('li');
+                item.className = 'item';
+                item.dataset.value = value;
+                item.innerHTML = `
+                    <span class="checkbox"><i class="fas fa-check"></i></span>
+                    <span class="item-text">${value}</span>
+                `;
+                list.appendChild(item);
+            });
+        };
 
+        createItems(monthListItems, filterData.months, 'All Months');
+        createItems(yearListItems, filterData.years, 'All Years');
+        createItems(plantListItems, filterData.plants, 'All Plants');
 
-        plantFilter.innerHTML = '<option value="All Plants">All Plants</option>';
-        filterData.plants.forEach(plant => {
-            const option = document.createElement('option');
-            option.value = plant;
-            option.textContent = plant;
-            plantFilter.appendChild(option);
-        });
-
-
-        // Add event listeners AFTER populating filters
-        monthFilter.addEventListener('change', updateDashboard);
-        yearFilter.addEventListener('change', updateDashboard); // Add event listener for year filter
-        plantFilter.addEventListener('change', updateDashboard);
+        // Setup event listeners for the multi-select dropdowns
+        setupMultiSelect(monthFilterContainer, monthFilterBtn, monthListItems, monthBtnText, 'All Months');
+        setupMultiSelect(yearFilterContainer, yearFilterBtn, yearListItems, yearBtnText, 'All Years');
+        setupMultiSelect(plantFilterContainer, plantFilterBtn, plantListItems, plantBtnText, 'All Plants');
     }
 
 
