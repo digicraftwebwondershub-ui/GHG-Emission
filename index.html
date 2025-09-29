@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+        /* Define main green color */
+        --main-green: #2e8b57; /* Dark Forest Green for Total GHG */
+        /* Define light green color for Scope 1 section (from image) */
+        --scope1-green: #66BB6A; /* Standard Green for Scope 1 */
+        /* Define Scope 2 green */
+        --scope2-green: #4CAF50; /* A slightly different, vibrant green for Scope 2 */
+        /* Define Scope 3 green */
+        --scope3-green: #8BC34A; /* A lighter, more lime green for Scope 3 */
+        /* Water card blue color from image */
+        --water-card-blue: #3498db; 
+
+
+        /* New Green Palette for Buttons */
+        --btn-total-ghg-green: #2e8b57; /* Matches --main-green */
+        --btn-scope1-green: #66BB6A; /* Matches --scope1-green */
+        --btn-scope2-green: #4CAF50; /* Matches --scope2-green */
+        --btn-scope3-green: #8BC34A; /* A lighter, more lime green for Scope 3 */
+        /* Re-added for previous user request, though not in current scope */
+        --btn-prod-intensity-orange: #FFA726; 
+
+
+        --scope1-green-light-bg: #E8F5E9; /* Lighter shade for backgrounds, like #eaf5ee, for scope1 */
+        --scope2-green-light-bg: #E3F2FD; /* Lighter shade for Scope 2 background, light blue */
+        --scope3-green-light-bg: #F0F4C3; /* Very light yellow-green for Scope 3 background */
+        --water-card-blue-light-bg: #EAF2F8; /* Light blue for water cards */
+
+        --main-green-light-hover: #eaf5ee; /* Light green for main section card hover */
+        --scope1-green-light-hover: #E8F5E9; /* Light green for Scope 1 section card hover */
+        --scope2-green-light-hover: #D0E3FF; /* Lighter blue on hover for Scope 2 cards */
+        --scope3-green-light-hover: #E6EE9C; /* Lighter yellow-green on hover for Scope 3 cards */
+        --water-card-blue-light-hover: #DAE8F3;
+        
+        --value-font-color: #34495e; /* Centralized variable for primary value font color */
+    }
+
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f2f5; /* Light gray background */
+      color: #333;
+      line-height: 1.6;
+    }
+    .dashboard-container {
+      max-width: 1600px; /* Even Wider container */
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+      gap: 25px;
+      margin-bottom: 30px;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 2px solid #e9ecef; /* Subtle border */
+      background-color: #fdfdfd;
+      border-radius: 8px;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+    }
+    .filter-group label {
+      font-weight: 500;
+      margin-right: 12px;
+      color: #34495e; /* Darker text for labels */
+      font-size: 1.1em;
+    }
+    .filter-group select {
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid #cce2d6; /* Greenish border */
+      background-color: #eaf5ee; /* Light greenish background */
+      font-size: 1rem;
+      cursor: pointer;
+      min-width: 180px;
+      color: var(--main-green); /* Darker green text */
+      appearance: none; /* Remove default arrow */
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%202-7%207-7-7%202-2z%22%20fill%3D%22%232e8b57%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 12px;
+      transition: border-color 0.3s ease;
+    }
+    .filter-group select:hover {
+      border-color: var(--main-green); /* Darker green on hover */
+    }
+
+
+    .section-nav-buttons {
+      margin-left: auto; /* Push buttons to the right */
+      display: flex;
+      flex-wrap: wrap; /* Allow buttons to wrap */
+      gap: 10px;
+    }
+    .section-nav-buttons button {
+      /* Default styles for all section buttons */
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      /* Add all properties to transition for smooth effects */
+      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .section-nav-buttons button:hover {
+      /* General hover effect for all section buttons */
+      transform: translateY(-2px); /* Lift effect on hover */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
+    }
+    /* Specific button colors for sections using the new green palette */
+    #btn-total-ghg { background-color: var(--btn-total-ghg-green); }
+    #btn-total-ghg:hover { background-color: #257a4a; } /* Darker shade of its own green */
+
+    #btn-scope1 { background-color: var(--btn-scope1-green); }
+    #btn-scope1:hover { background-color: #5cb85c; } /* Darker shade of its own green */
+
+    #btn-scope2 { background-color: var(--btn-scope2-green); }
+    #btn-scope2:hover { background-color: #449d44; } /* Darker shade of its own green */
+
+    #btn-scope3 { background-color: var(--btn-scope3-green); }
+    #btn-scope3:hover { background-color: #7ab840; } /* Darker shade of its own green */
+
+    #btn-prod-intensity { background-color: #FFA726; }
+    #btn-prod-intensity:hover { background-color: #e09220; }
+
+
+    /* Main Title Styling */
+    .dashboard-title-wrapper { /* New wrapper for the main title */
+        border-radius: 12px 12px 0 0; /* Match container border radius */
+        overflow: hidden; /* Hide overflow for rounded corners */
+        margin: -30px -30px 30px -30px; /* Pull it to the edges of .dashboard-container and add bottom margin */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Shadow for the strip */
+    }
+    .main-title-strip {
+        background-color: var(--main-green); /* Green background for title strip */
+        padding: 20px 0; /* Adjust padding for height */
+        text-align: center;
+    }
+    .main-title {
+        font-size: 2.8em; /* Larger font for main title */
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ffffff; /* White text on green strip */
+        margin: 0; /* Remove default margin */
+    }
+
+
+    h2 {
+      color: #34495e; /* Dark blue-gray for section titles */
+      margin-top: 35px;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 12px;
+      font-size: 1.8em;
+      font-weight: 500;
+    }
+    .section-box {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+    }
+    .section-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .cards-container {
+      display: grid;
+      /* Define grid areas for the specified layout */
+      grid-template-areas:
+        "scorecard scorecard piechart piechart"
+        "monthly monthly monthly monthly"
+        "plant plant plant plant";
+      grid-template-columns: 1fr 1fr 1fr 1fr; /* Ensures even column distribution for areas */
+      gap: 25px;
+      margin-top: 20px;
+      align-items: stretch; /* Ensure cards stretch to same height */
+    }
+
+
+    #totalGhgEmissionCard { grid-area: scorecard; }
+    #scopeCategoryCard { grid-area: piechart; }
+    #monthlyGhgCard { grid-area: monthly; }
+    #plantGhgCard { grid-area: plant; }
+
+
+    /* Scope 1 specific layout */
+    .scope1-section .cards-container {
+      grid-template-areas:
+        "scope1-scorecard scope1-scorecard scope1-piechart scope1-piechart"; /* Top row for Scorecard and Pie Chart */
+      grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns for top row */
+      margin-bottom: 25px;
+    }
+    #scope1ScorecardCard { grid-area: scope1-scorecard; }
+    #scope1CategoryPieCard { grid-area: scope1-piechart; }
+
+    /* Scope 2 specific layout */
+    .scope2-section .cards-container {
+      grid-template-areas:
+        "scope2-scorecard scope2-scorecard scope2-energy-mix scope2-energy-mix"; /* Top row for Scorecard and Pie Chart */
+      grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns for top row */
+      margin-bottom: 25px;
+    }
+    #scope2ScorecardCard { grid-area: scope2-scorecard; }
+    #scope2EnergyMixCard { grid-area: scope2-energy-mix; }
+
+    /* NEW: Scope 3 specific layout */
+    .scope3-section .cards-container {
+        grid-template-areas:
+            "scope3-scorecard water-info"; /* Scorecard takes 2/3, water takes 1/3 */
+        grid-template-columns: 1.5fr 1fr; /* Adjusted for better balance */
+        align-items: stretch; /* Stretch content again when stacked */
+        margin-bottom: 25px;
+    }
+    #waterInfoCardsContainer { /* New container for Water cards */
+        grid-area: water-info;
+        display: flex;
+        flex-direction: column; /* Stack water cards vertically */
+        gap: 15px; /* Gap between water cards */
+    }
+    #waterInfoCardsContainer .card {
+        flex: 1; /* Make each water card take equal height within its container */
+        min-height: unset; /* Override default min-height for these specific cards */
+        padding-top: 0; /* Adjust padding due to new header strip */
+    }
+    #waterInfoCardsContainer .card .scorecard-content {
+        padding: 15px; /* Add padding inside the content area */
+        flex-direction: row; /* Arrange icon and text horizontally */
+        justify-content: flex-start; /* Align everything to the left */
+        align-items: center; /* Center them vertically */
+        gap: 15px; /* Space between icon and text */
+        width: auto;
+    }
+    .water-card-icon {
+        font-size: 2.5em;
+        color: var(--water-card-blue);
+        padding: 10px;
+        border-radius: 50%; /* Make it a circle */
+        background-color: var(--water-card-blue-light-bg);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 60px;
+        min-height: 60px;
+        animation: pulse 2s infinite;
+    }
+    .water-card-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-grow: 1; /* Allow details to take up remaining space */
+    }
+    .water-card-details .card-title {
+        font-size: 1.1em;
+        font-weight: 500;
+        color: var(--value-font-color);
+        text-transform: none; /* Title is not uppercase */
+        margin: 0;
+    }
+    .water-card-details .scorecard-value {
+        font-size: 1.8em; /* Adjusted to fit the layout better */
+        margin-bottom: 0; /* Remove extra space */
+        line-height: 1.2;
+        text-align: left;
+    }
+
+    .subsection {
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+    .subsection-cards-container {
+        display: flex; /* Use flexbox for icon and cards side-by-side */
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        justify-content: center; /* Center items when they wrap */
+    }
+    .subsection-icon {
+        font-size: 3.5em; /* Large icon size */
+        color: var(--scope1-green); /* Default icon color */
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--scope1-green-light-bg); /* Default lighter green background */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 80px; /* Ensure icon container is big enough */
+        min-height: 80px;
+        animation: pulse 2s infinite; /* Simple pulse animation */
+    }
+    /* Scope 2 specific icon styling */
+    .scope2-section .subsection-icon {
+        color: var(--scope2-green); /* Scope 2 specific icon color */
+        background-color: var(--scope2-green-light-bg); /* Scope 2 specific background */
+    }
+    /* Scope 3 specific icon styling */
+    .scope3-section .subsection-icon {
+        color: var(--scope3-green); /* Scope 3 specific icon color */
+        background-color: var(--scope3-green-light-bg); /* Scope 3 specific background */
+    }
+
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: translateY(0); } /* Ensure it returns to original position */
+    }
+    .subsection-value-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 3 cards side-by-side, responsive */
+        gap: 15px;
+        flex-grow: 1; /* Allow cards to take remaining space */
+    }
+    .subsection-value-card {
+        background-color: #fcfcfc;
+        padding-top: 0; /* Adjusted for title strip */
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        text-align: center;
+        transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out; /* Add background-color transition */
+        overflow: hidden; /* Ensure strip fits rounded corners */
+    }
+    .subsection-value-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        background-color: var(--scope1-green-light-hover); /* Default: Light green background on hover for subsection cards */
+    }
+    /* Scope 2 specific subsection card hover */
+    .scope2-section .subsection-value-card:hover {
+      background-color: var(--scope2-green-light-hover); /* Light blue background on hover for Scope 2 subsection cards */
+    }
+    /* Scope 3 specific subsection card hover */
+    .scope3-section .subsection-value-card:hover {
+      background-color: var(--scope3-green-light-hover); /* Light yellow-green background on hover for Scope 3 subsection cards */
+    }
+
+    .subsection-value-card .card-title-container { /* Reusing card-title-container for subsection cards */
+        background-color: var(--scope1-green); /* Default: Light green strip */
+        margin-bottom: 15px; /* Adjust margin for smaller cards */
+        padding: 8px 0; /* Smaller padding for title strip */
+    }
+    /* Scope 2 specific subsection card title strip */
+    .scope2-section .subsection-value-card .card-title-container {
+      background-color: var(--scope2-green); /* Scope 2 specific strip color */
+    }
+    /* Scope 3 specific subsection card title strip */
+    .scope3-section .subsection-value-card .card-title-container {
+      background-color: var(--scope3-green); /* Scope 3 specific strip color */
+    }
+
+    .subsection-value-card .card-title {
+        font-size: 1.1em; /* Smaller font for subsection card titles */
+    }
+    .subsection-value-card .value-content {
+        padding: 0 15px 15px; /* Padding for content below the strip */
+    }
+    .subsection-value-card .value {
+        font-size: 1.8em;
+        font-weight: 600;
+        color: var(--value-font-color); /* Uses centralized variable */
+    }
+
+
+    /* Card Styles (reused and overridden) */
+    .card {
+      background-color: #fdfdfd; /* Off-white for card background */
+      padding-top: 0; /* Adjust padding due to header */
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+      min-height: 280px; /* Slightly taller for visual balance */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Align content from top */
+      align-items: center;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out; /* Add background-color transition */
+      position: relative;
+      overflow: hidden; /* Ensure nothing spills out of rounded corners */
+    }
+    .card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    /* Hover effect for Total GHG cards */
+    .total-ghg-section .card:hover {
+      background-color: var(--main-green-light-hover); /* Light green for Total GHG card hover */
+    }
+    /* Hover effect for Scope 1 cards */
+    .scope1-section .card:hover {
+      background-color: var(--scope1-green-light-hover); /* Light green for Scope 1 card hover */
+    }
+    /* Hover effect for Scope 2 cards */
+    .scope2-section .card:hover {
+      background-color: var(--scope2-green-light-hover); /* Light blue for Scope 2 card hover */
+    }
+    /* Hover effect for Scope 3 cards */
+    .scope3-section .card:hover {
+      background-color: var(--scope3-green-light-hover); /* Light yellow-green for Scope 3 card hover */
+    }
+
+
+    .card-title-container {
+        width: 100%;
+        background-color: var(--main-green); /* Main green for Total GHG cards */
+        padding: 10px 0;
+        margin-bottom: 20px; /* Space between title background and content */
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    /* Override for Scope 1 section main cards and monthly/plant charts */
+    .scope1-section #scope1ScorecardCard .card-title-container,
+    .scope1-section #scope1CategoryPieCard .card-title-container,
+    .scope1-section #monthlyScope1Card .card-title-container,
+    .scope1-section #plantScope1Card .card-title-container {
+        background-color: var(--scope1-green); /* Light green for Scope 1 cards */
+    }
+    /* Override for Scope 2 section main cards and monthly/plant charts */
+    .scope2-section #scope2ScorecardCard .card-title-container,
+    .scope2-section #scope2EnergyMixCard .card-title-container,
+    .scope2-section #monthlyScope2Card .card-title-container,
+    .scope2-section #plantScope2Card .card-title-container {
+        background-color: var(--scope2-green); /* Scope 2 green for Scope 2 cards */
+    }
+    /* NEW: Override for Scope 3 section main cards and monthly/plant charts */
+    .scope3-section .card-title-container { /* Applies to scope3 scorecard and water cards */
+        background-color: var(--scope3-green); /* Scope 3 green for Scope 3 cards */
+    }
+    .scope3-section #monthlyScope3Card .card-title-container,
+    .scope3-section #plantScope3Card .card-title-container {
+        background-color: var(--scope3-green); /* Scope 3 green for Scope 3 charts */
+    }
+
+
+    .card-title {
+      font-size: 1.3em;
+      font-weight: 500;
+      color: #ffffff; /* White text on green background */
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0; /* Remove default margin from h3/div */
+    }
+
+
+    .scorecard-content {
+        padding: 0 25px; /* Apply horizontal padding to content */
+        flex-grow: 1; /* Allow content to take available space */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%; /* Ensure content takes full width inside padding */
+    }
+
+
+    .scorecard-value {
+      font-size: 3.5em; /* Larger score value */
+      font-weight: 700;
+      color: var(--value-font-color); /* Uses centralized variable */
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+
+
+    .performance-indicator {
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .performance-percentage {
+        font-weight: bold;
+        /* Color set dynamically by JS */
+    }
+    .performance-text-fixed { /* Re-added this span */
+        color: var(--value-font-color); /* Uses centralized variable */
+        font-weight: bold; /* Bold and italic for the text */
+        font-style: italic;
+    }
+
+
+    .arrow-icon {
+      font-size: 1.8em;
+      /* Color set dynamically by JS */
+      animation: bounce-up 1.5s infinite; /* Animated arrow */
+    }
+    @keyframes bounce-up {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: scale(1.05); } /* Slight scale with bounce */
+      100% { transform: translateY(0); } /* Ensure it returns to original position */
+    }
+    /* Arrow specific colors: */
+    .arrow-icon.red { color: #e74c3c; }
+    .arrow-icon.green { color: #27ae60; } /* Actual green, not dark green */
+    .arrow-icon.gray { color: #95a5a6; } /* Gray for N/A or equal */
+
+
+    .chart-container {
+      width: 100%; /* Occupy full width of card */
+      height: 380px; /* Slightly increased height for charts */
+      display: flex; /* For centering content in chart div */
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 20px; /* Add some padding at the bottom for content separation */
+    }
+    .chart-container > div { /* The actual chart div inside container */
+        width: 100%; /* Ensure chart div also takes full width */
+        height: 100%; /* Ensure chart div also takes full height */
+    }
+
+    /* Back to Top Button */
+    #backToTopBtn {
+        display: none; /* Hidden by default */
+        position: fixed; /* Fixed/sticky position */
+        bottom: 30px; /* Place the button at the bottom */
+        right: 30px; /* Place the button at the right */
+        z-index: 99; /* Make sure it does not overlap */
+        border: none; /* Remove borders */
+        outline: none; /* Remove outline */
+        background-color: var(--main-green); /* Set a background color */
+        color: white; /* Text color */
+        cursor: pointer; /* Add a mouse pointer on hover */
+        padding: 15px; /* Some padding */
+        border-radius: 10px; /* Rounded corners */
+        font-size: 1.2em; /* Increase font size */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+
+    #backToTopBtn:hover {
+        background-color: #257a4a; /* Darker green on hover */
+        transform: translateY(-3px);
+    }
+
+
+    /* Loader and Error Styles */
+    .loading-spinner {
+        display: none; /* Hidden by default */
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-top: 4px solid var(--main-green); /* Green spinner */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 0.8s linear infinite;
+        margin: 40px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .error-message {
+        color: #c0392b; /* Darker red for errors */
+        font-weight: bold;
+        text-align: center;
+        margin-top: 30px;
+        font-size: 1.1em;
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) { /* Adjusted breakpoint for more responsive cards */
+      .cards-container {
+        grid-template-areas: /* Adjusted for smaller screens first for main section */
+          "scorecard scorecard"
+          "piechart piechart"
+          "monthly monthly"
+          "plant plant";
+        grid-template-columns: 1fr 1fr;
+      }
+      .scope1-section .cards-container { /* Scope 1 top cards still 2x2 on larger smaller screens */
+        grid-template-areas:
+          "scope1-scorecard"
+          "scope1-piechart";
+        grid-template-columns: 1fr;
+      }
+      .scope2-section .cards-container { /* Scope 2 top cards */
+        grid-template-areas:
+          "scope2-scorecard"
+          "scope2-energy-mix";
+        grid-template-columns: 1fr;
+      }
+      /* NEW: Scope 3 Responsive adjustment */
+      .scope3-section .cards-container {
+        grid-template-areas:
+            "scope3-scorecard"
+            "water-info";
+        grid-template-columns: 1fr;
+        align-items: stretch; /* Stretch content again when stacked */
+      }
+      #waterInfoCardsContainer {
+        height: auto; /* Allow height to be determined by content when stacked */
+      }
+      #waterInfoCardsContainer .card .scorecard-content {
+          flex-direction: column; /* Stack icon and text vertically again */
+          text-align: center;
+          align-items: center;
+          gap: 10px;
+      }
+      #waterInfoCardsContainer .card .water-card-details {
+          align-items: center;
+      }
+      .subsection-cards-container {
+        flex-direction: column;
+      }
+      .subsection-value-cards {
+        width: 100%;
+      }
+    }
+    @media (max-width: 768px) {
+      .cards-container, .scope1-section .cards-container, .scope2-section .cards-container, .scope3-section .cards-container {
+        grid-template-areas:
+          "scorecard"
+          "piechart"
+          "monthly"
+          "plant";
+        grid-template-columns: 1fr;
+      }
+      .scope1-section .cards-container {
+        grid-template-areas:
+          "scope1-scorecard"
+          "scope1-piechart";
+      }
+      .scope2-section .cards-container {
+        grid-template-areas:
+          "scope2-scorecard"
+          "scope2-energy-mix";
+      }
+      .scope3-section .cards-container {
+        grid-template-areas:
+            "scope3-scorecard"
+            "water-info";
+      }
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-group {
+        width: 100%;
+      }
+      .filter-group select, .section-nav-buttons button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .section-nav-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        margin-left: 0;
+      }
+      .dashboard-container {
+        padding: 15px;
+      }
+      .main-title {
+        font-size: 2em;
+      }
+      #backToTopBtn {
+          right: 15px;
+          bottom: 15px;
+          padding: 12px;
+          font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="dashboard-title-wrapper">
+      <div class="main-title-strip">
+        <h1 class="main-title">GHG Emission Dashboard</h1>
+      </div>
+    </div>
+
+
+    <div class="filters">
+      <div class="filter-group">
+        <label for="monthFilter">Month Coverage:</label>
+        <select id="monthFilter">
+          <option value="All Months">All Months</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="yearFilter">Year Coverage:</label>
+        <select id="yearFilter">
+          <option value="All Years">All Years</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="plantFilter">Plant:</label>
+        <select id="plantFilter">
+          <option value="All Plants">All Plants</option>
+        </select>
+      </div>
+      <div class="section-nav-buttons">
+        <button id="btn-total-ghg" onclick="scrollToSection('total-ghg-section')">Total GHG</button>
+        <button id="btn-scope1" onclick="scrollToSection('scope1-section')">Scope 1</button>
+        <button id="btn-scope2" onclick="scrollToSection('scope2-section')">Scope 2</button>
+        <button id="btn-scope3" onclick="scrollToSection('scope3-section')">Scope 3</button>
+        </div>
+    </div>
+
+
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    <div class="error-message" id="errorMessage"></div>
+
+
+    <div class="section-box total-ghg-section" id="total-ghg-section">
+      <h2>1. Total Annual GHG Emission</h2>
+      <div class="cards-container">
+        <div class="card" id="totalGhgEmissionCard">
+          <div class="card-title-container">
+            <div class="card-title">Total Annual GHG Emission</div>
+          </div>
+          <div class="scorecard-content">
+            <div class="scorecard-value" id="totalGhgValue">0.00 TCO2eq</div>
+            <div class="performance-indicator">
+              <span class="arrow-icon" id="totalGhgArrow"></span> <span id="totalGhgPerformancePercentage" class="performance-percentage"></span><span class="performance-text-fixed">performance against limit</span> </div>
+          </div>
+        </div>
+
+
+        <div class="card" id="scopeCategoryCard">
+          <div class="card-title-container">
+            <div class="card-title">GHG Emission Scope Category Contribution</div>
+          </div>
+          <div class="chart-container">
+            <div id="scopeCategoryChart"></div>
+          </div>
+        </div>
+
+
+        <div class="card" id="monthlyGhgCard">
+          <div class="card-title-container">
+            <div class="card-title">Monthly Total GHG Emission</div>
+          </div>
+          <div class="chart-container">
+            <div id="monthlyGhgChart"></div>
+          </div>
+        </div>
+
+
+        <div class="card" id="plantGhgCard">
+          <div class="card-title-container">
+            <div class="card-title">Plant Total GHG Emission</div>
+          </div>
+          <div class="chart-container">
+            <div id="plantGhgChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="section-box scope1-section" id="scope1-section">
+      <h2>2. Scope 1 Emissions</h2>
+      
+      <div class="cards-container">
+          <div class="card" id="scope1ScorecardCard">
+              <div class="card-title-container">
+                  <div class="card-title">Scope 1 Total</div>
+              </div>
+              <div class="scorecard-content">
+                  <div class="scorecard-value" id="scope1TotalValue">0.00 TCO2eq</div>
+                  <div class="performance-indicator">
+                      <span class="arrow-icon" id="scope1Arrow"></span> <span id="scope1PerformancePercentage" class="performance-percentage"></span> <span class="performance-text-fixed">performance against limit</span> </div>
+              </div>
+          </div>
+
+
+          <div class="card" id="scope1CategoryPieCard">
+              <div class="card-title-container">
+                  <div class="card-title">Scope 1 Category Contribution</div>
+              </div>
+              <div class="chart-container">
+                  <div id="scope1CategoryChart"></div>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-fire"></i></div>
+              <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Stationary Combustion</div> </div>
+                      <div class="value-content">
+                          <div class="value" id="stationaryCombustionValue">0.00 TCO2eq</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Diesel</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="stationaryDieselValue">0.00 LITERS</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">LPG</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="stationaryLPGValue">0.00 KG</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-tractor"></i></div>
+              <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Mobile Combustion Non-Road</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mobileNonRoadValue">0.00 TCO2eq</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Diesel</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mobileNonRoadDieselValue">0.00 LITERS</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Gasoline</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mobileNonRoadGasolineValue">0.00 LITERS</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-car"></i></div>
+              <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Mobile Combustion On-Road</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mobileOnRoadValue">0.00 TCO2eq</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Diesel</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mobileOnRoadDieselValue">0.00 LITERS</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Gasoline</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mobileOnRoadGasolineValue">0.00 LITERS</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="card" id="monthlyScope1Card" style="grid-column: span 4; margin-top: 30px;">
+          <div class="card-title-container">
+              <div class="card-title">Monthly Scope 1 Emission</div>
+          </div>
+          <div class="chart-container">
+              <div id="monthlyScope1Chart"></div>
+          </div>
+      </div>
+
+
+      <div class="card" id="plantScope1Card" style="grid-column: span 4;">
+          <div class="card-title-container">
+              <div class="card-title">Plant Total Scope 1 Emission</div>
+          </div>
+          <div class="chart-container">
+              <div id="plantScope1Chart"></div>
+          </div>
+      </div>
+
+
+    </div>
+
+
+    <div class="section-box scope2-section" id="scope2-section">
+      <h2>3. Scope 2 Emissions</h2>
+      <div class="cards-container">
+        <div class="card" id="scope2ScorecardCard">
+          <div class="card-title-container">
+            <div class="card-title">Scope 2 Total</div>
+          </div>
+          <div class="scorecard-content">
+            <div class="scorecard-value" id="scope2TotalValue">0.00 TCO2eq</div>
+            <div class="performance-indicator">
+              <span class="arrow-icon" id="scope2Arrow"></span> <span id="scope2PerformancePercentage" class="performance-percentage"></span> <span class="performance-text-fixed">performance against limit</span> </div>
+          </div>
+        </div>
+
+        <div class="card" id="scope2EnergyMixCard">
+          <div class="card-title-container">
+            <div class="card-title">Scope 2 Energy Mix</div>
+          </div>
+          <div class="chart-container">
+            <div id="scope2EnergyMixChart"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-bolt"></i></div> <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Total Non-Renewable Energy</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="scope2NonRenewableKWHValue">0.00 KWH</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Total Renewable Energy</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="scope2RenewableKWHValue">0.00 KWH</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="card" id="monthlyScope2Card" style="grid-column: span 4; margin-top: 30px;">
+          <div class="card-title-container">
+              <div class="card-title">Monthly Scope 2 Emission</div>
+          </div>
+          <div class="chart-container">
+              <div id="monthlyScope2Chart"></div>
+          </div>
+      </div>
+
+      <div class="card" id="plantScope2Card" style="grid-column: span 4;">
+          <div class="card-title-container">
+              <div class="card-title">Plant Total Scope 2 Emission</div>
+          </div>
+          <div class="chart-container">
+              <div id="plantScope2Chart"></div>
+          </div>
+      </div>
+
+    </div>
+
+    <div class="section-box scope3-section" id="scope3-section">
+      <h2>4. Scope 3 Emissions</h2>
+      <div class="cards-container">
+          <div class="card" id="scope3ScorecardCard">
+              <div class="card-title-container">
+                  <div class="card-title">Scope 3 Total</div>
+              </div>
+              <div class="scorecard-content">
+                  <div class="scorecard-value" id="scope3TotalValue">0.00 TCO2eq</div>
+                  <div class="performance-indicator">
+                      <span class="arrow-icon" id="scope3Arrow"></span> <span id="scope3PerformancePercentage" class="performance-percentage"></span> <span class="performance-text-fixed"></span> </div>
+              </div>
+          </div>
+
+          <div id="waterInfoCardsContainer">
+              <div class="card" id="totalWaterWithdrawnCard">
+                  <div class="card-title-container">
+                      <div class="card-title">Total Water Withdrawn</div>
+                  </div>
+                  <div class="scorecard-content">
+                      <div class="subsection-icon"><i class="fas fa-tint"></i></div>
+                      <div class="scorecard-value" id="totalWaterWithdrawnValue">0.00 m3</div>
+                  </div>
+              </div>
+              <div class="card" id="totalWaterTreatmentCard">
+                  <div class="card-title-container">
+                      <div class="card-title">Total Water Treatment</div>
+                  </div>
+                  <div class="scorecard-content">
+                      <div class="subsection-icon"><i class="fas fa-recycle"></i></div>
+                      <div class="scorecard-value" id="totalWaterTreatmentValue">0.00 m3</div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-trash-alt"></i></div>
+              <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Mixed Solid Waste</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="mixedSolidWasteKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Paper</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="paperKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Plastic</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="plasticKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-box-open"></i></div>
+              <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Assorted Metal</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="assortedMetalKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Fabric</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="fabricKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Foam Scraps</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="foamScrapsKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="subsection">
+          <div class="subsection-cards-container">
+              <div class="subsection-icon"><i class="fas fa-oil-can"></i></div>
+              <div class="subsection-value-cards">
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Used Oils</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="usedOilsLitersValue">0.00 LITERS</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Chemical Flashing</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="chemicalFlashingMTValue">0.00 MT</div>
+                      </div>
+                  </div>
+                  <div class="subsection-value-card">
+                      <div class="card-title-container">
+                          <div class="card-title">Oil Contaminated Rags</div>
+                      </div>
+                      <div class="value-content">
+                          <div class="value" id="oilContaminatedRagsKGValue">0.00 KG</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <button onclick="scrollToTop()" id="backToTopBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+
+
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script>
+    google.charts.load('current', {'packages':['corechart', 'bar']});
+    google.charts.setOnLoadCallback(loadInitialData);
+
+
+    // Get references to DOM elements
+    const monthFilter = document.getElementById('monthFilter');
+    const yearFilter = document.getElementById('yearFilter'); // New year filter
+    const plantFilter = document.getElementById('plantFilter');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+
+    // --- Utility Functions (defined first to ensure availability) ---
+
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+
+    function scrollFunction() {
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        backToTopBtn.style.display = "block";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    }
+
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+
+    function showLoading() {
+        loadingSpinner.style.display = 'block';
+        errorMessage.style.display = 'none';
+        document.querySelector('.dashboard-container').style.opacity = '0.5'; // Dim content
+        document.querySelector('.dashboard-container').style.pointerEvents = 'none'; // Disable interaction
+    }
+
+
+    function hideLoading() {
+        loadingSpinner.style.display = 'none';
+        document.querySelector('.dashboard-container').style.opacity = '1';
+        document.querySelector('.dashboard-container').style.pointerEvents = 'auto';
+    }
+
+
+    function showError(message) {
+        errorMessage.textContent = 'Error: ' + message;
+        errorMessage.style.display = 'block';
+        hideLoading();
+    }
+
+
+    /**
+     * Updates the dashboard data and redraws charts based on selected filters.
+     * This function is called on initial load and whenever filter selections change.
+     */
+    function updateDashboard() {
+        showLoading();
+        const selectedMonth = monthFilter.value;
+        const selectedPlant = plantFilter.value;
+        const selectedYear = yearFilter.value; // Get selected year
+
+
+        google.script.run
+            .withSuccessHandler(renderDashboard)
+            .withFailureHandler(showError)
+            .getDashboardData(selectedMonth, selectedPlant, selectedYear); // Pass selected year
+    }
+
+
+    // Function to scroll to a specific section
+    function scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+
+    // --- Data Loading and Population Functions ---
+
+
+    /**
+     * Initiates the loading of filter data from the backend.
+     */
+    function loadInitialData() {
+        showLoading();
+        google.script.run
+            .withSuccessHandler(function(filterData) {
+                populateFilters(filterData);
+                updateDashboard(); // Initial dashboard load after filters are populated
+            })
+            .withFailureHandler(showError)
+            .getFilterData();
+    }
+
+
+    /**
+     * Populates the month and plant filter dropdowns.
+     * @param {Object} filterData - Object containing arrays of unique plants, months, and years.
+     */
+    function populateFilters(filterData) {
+        monthFilter.innerHTML = '<option value="All Months">All Months</option>';
+        filterData.months.forEach(month => {
+            const option = document.createElement('option');
+            option.value = month;
+            option.textContent = month;
+            monthFilter.appendChild(option);
+        });
+
+
+        yearFilter.innerHTML = '<option value="All Years">All Years</option>'; // Populate year filter
+        filterData.years.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearFilter.appendChild(option);
+        });
+
+
+        plantFilter.innerHTML = '<option value="All Plants">All Plants</option>';
+        filterData.plants.forEach(plant => {
+            const option = document.createElement('option');
+            option.value = plant;
+            option.textContent = plant;
+            plantFilter.appendChild(option);
+        });
+
+
+        // Add event listeners AFTER populating filters
+        monthFilter.addEventListener('change', updateDashboard);
+        yearFilter.addEventListener('change', updateDashboard); // Add event listener for year filter
+        plantFilter.addEventListener('change', updateDashboard);
+    }
+
+
+    /**
+     * Renders the dashboard with the fetched data.
+     * @param {Object} data - Processed dashboard data from the backend.
+     */
+    function renderDashboard(data) {
+        hideLoading();
+        document.getElementById('errorMessage').style.display = 'none';
+
+
+        // --- Render Total Annual GHG Emission Section ---
+        document.getElementById('totalGhgValue').textContent = parseFloat(data.totalGHGEmission).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        
+        const totalGhgPerformancePercentageElement = document.getElementById('totalGhgPerformancePercentage');
+        totalGhgPerformancePercentageElement.textContent = data.totalGhgPerformanceText; // Percentage only
+        totalGhgPerformancePercentageElement.style.color = data.totalGhgPerformanceColor;
+
+
+        const totalGhgArrowElement = document.getElementById('totalGhgArrow');
+        totalGhgArrowElement.innerHTML = data.totalGhgArrowDirection; // Set arrow icon
+        totalGhgArrowElement.style.color = data.totalGhgPerformanceColor; // Color arrow same as percentage
+
+
+        drawScopeCategoryChart(data.mainScopeCategoryContribution); // Main pie chart
+
+
+        drawMonthlyGhgChart(data.monthlyTotalGhgData, data.maxMonthlyTotalGhgValue);
+        drawPlantGhgChart(data.plantTotalGhgData, data.maxPlantTotalGhgValue);
+
+
+        // --- Render Scope 1 Section ---
+        document.getElementById('scope1TotalValue').textContent = parseFloat(data.scope1ActualTotal).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        
+        const scope1PerformancePercentageElement = document.getElementById('scope1PerformancePercentage');
+        scope1PerformancePercentageElement.textContent = data.scope1PerformanceText; // Percentage only
+        scope1PerformancePercentageElement.style.color = data.scope1PerformanceColor;
+        
+        const scope1ArrowElement = document.getElementById('scope1Arrow');
+        scope1ArrowElement.innerHTML = data.scope1ArrowDirection; // Set arrow icon
+        scope1ArrowElement.style.color = data.scope1PerformanceColor; // Color arrow same as percentage
+
+
+        drawScope1CategoryChart(data.scope1BreakdownPieData); // Scope 1 breakdown pie chart
+
+
+        // Subsection cards (Data and Units) - ALL values now rounded to 2 decimal places
+        document.getElementById('stationaryCombustionValue').textContent = parseFloat(data.scope1StationaryTotalSub).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        document.getElementById('stationaryDieselValue').textContent = parseFloat(data.scope1StationaryDieselTotal).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' LITERS';
+        document.getElementById('stationaryLPGValue').textContent = parseFloat(data.scope1StationaryLPGTotal).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+
+
+        document.getElementById('mobileNonRoadValue').textContent = parseFloat(data.mobileNonRoadTotalSub).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        document.getElementById('mobileNonRoadDieselValue').textContent = parseFloat(data.mobileNonRoadDiesel).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' LITERS';
+        document.getElementById('mobileNonRoadGasolineValue').textContent = parseFloat(data.mobileNonRoadGasoline).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' LITERS';
+
+
+        document.getElementById('mobileOnRoadValue').textContent = parseFloat(data.mobileOnRoadTotalSub).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        document.getElementById('mobileOnRoadDieselValue').textContent = parseFloat(data.mobileOnRoadDiesel).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' LITERS';
+        document.getElementById('mobileOnRoadGasolineValue').textContent = parseFloat(data.mobileOnRoadGasoline).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' LITERS';
+
+
+        drawMonthlyScope1Chart(data.monthlyScope1Data, data.maxMonthlyScope1Value);
+        drawPlantScope1Chart(data.plantScope1Data, data.maxPlantScope1Value);
+
+        // --- NEW: Render Scope 2 Section ---
+        document.getElementById('scope2TotalValue').textContent = parseFloat(data.scope2ActualTotal).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        
+        const scope2PerformancePercentageElement = document.getElementById('scope2PerformancePercentage');
+        scope2PerformancePercentageElement.textContent = data.scope2PerformanceText;
+        scope2PerformancePercentageElement.style.color = data.scope2PerformanceColor;
+        
+        const scope2ArrowElement = document.getElementById('scope2Arrow');
+        scope2ArrowElement.innerHTML = data.scope2ArrowDirection;
+        scope2ArrowElement.style.color = data.scope2PerformanceColor;
+
+        drawScope2EnergyMixChart(data.scope2EnergyMixPieData);
+
+        document.getElementById('scope2NonRenewableKWHValue').textContent = parseFloat(data.scope2KWHNonRenewable).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KWH';
+        document.getElementById('scope2RenewableKWHValue').textContent = parseFloat(data.scope2KWHRenewable).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KWH';
+
+        drawMonthlyScope2Chart(data.monthlyScope2Data, data.maxMonthlyScope2Value);
+        drawPlantScope2Chart(data.plantScope2Data, data.maxPlantScope2Value);
+
+        // --- NEW: Render Scope 3 Section ---
+        document.getElementById('scope3TotalValue').textContent = parseFloat(data.scope3ActualTotal).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' TCO2eq';
+        
+        const scope3PerformancePercentageElement = document.getElementById('scope3PerformancePercentage');
+        scope3PerformancePercentageElement.textContent = data.scope3PerformanceText; // This will now be an empty string
+        scope3PerformancePercentageElement.style.color = data.scope3PerformanceColor;
+        
+        const scope3ArrowElement = document.getElementById('scope3Arrow');
+        scope3ArrowElement.innerHTML = data.scope3ArrowDirection; // This will now be an empty string
+        scope3ArrowElement.style.color = data.scope3PerformanceColor;
+
+        document.getElementById('totalWaterWithdrawnValue').textContent = parseFloat(data.totalWaterWithdrawn).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' m3';
+        document.getElementById('totalWaterTreatmentValue').textContent = parseFloat(data.totalWaterTreatment).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' m3';
+
+        document.getElementById('mixedSolidWasteKGValue').textContent = parseFloat(data.mixedSolidWasteKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+        document.getElementById('paperKGValue').textContent = parseFloat(data.paperKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+        document.getElementById('plasticKGValue').textContent = parseFloat(data.plasticKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+
+        document.getElementById('assortedMetalKGValue').textContent = parseFloat(data.assortedMetalKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+        document.getElementById('fabricKGValue').textContent = parseFloat(data.fabricKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+        document.getElementById('foamScrapsKGValue').textContent = parseFloat(data.foamScrapsKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+
+        document.getElementById('usedOilsLitersValue').textContent = parseFloat(data.usedOilsLiters).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' LITERS';
+        document.getElementById('chemicalFlashingMTValue').textContent = parseFloat(data.chemicalFlashingMT).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' MT';
+        document.getElementById('oilContaminatedRagsKGValue').textContent = parseFloat(data.oilContaminatedRagsKG).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' KG';
+    }
+
+
+    // --- Chart Drawing Functions ---
+
+
+    // Total GHG Emission Scope Category Contribution Pie Chart (for Section 1)
+    function drawScopeCategoryChart(scopeData) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Scope');
+        data.addColumn('number', 'TCO2eq');
+        
+        // Filter out slices with a value of 0
+        const filteredData = scopeData.slice(1).filter(row => row[1] > 0);
+        
+        // If there's data, add it. Otherwise, show a message.
+        if (filteredData.length > 0) {
+            data.addRows(filteredData);
+        } else {
+            // Add a placeholder slice if no data is available
+            data.addRows([['No data available', 1]]); 
+        }
+
+        // Explicitly format the numerical column (index 1) for slices and tooltips
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1); // Apply to the TCO2eq column
+
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#2ecc71', '#8BC34A'], // Colors for Scope 1, Scope 2, Scope 3
+            pieSliceText: 'value', // 'value' will now automatically use the formatter
+            slices: {
+              0: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}},
+              1: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}},
+              2: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}}, // Added slice for Scope 3
+            },
+            chartArea: {left: '5%', top: '5%', width: '90%', height: '90%'},
+            legend: {
+              position: 'labeled',
+              textStyle: {color: 'black', bold: true, italic: true, fontSize: 14}
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}}, // Tooltip should use column format
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+        
+        // Special options for no data
+        if (filteredData.length === 0) {
+            options.pieSliceText = 'none'; // Hide slice text for placeholder
+            options.tooltip.trigger = 'none'; // Hide tooltip for placeholder
+            options.legend.position = 'none'; // Hide legend for placeholder
+            options.colors = ['#cccccc']; // Grey color for empty state
+        }
+
+
+        const chart = new google.visualization.PieChart(document.getElementById('scopeCategoryChart'));
+        chart.draw(data, options);
+    }
+
+
+    // Monthly Total GHG Emission Column Chart (for Section 1)
+    function drawMonthlyGhgChart(monthlyData, maxMonthlyValue) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'Last Year (2024)');
+        data.addColumn('number', 'Actual (2025)');  
+        data.addColumn('number', 'Target');
+
+
+        monthlyData.forEach(row => {
+            data.addRow([row.month, row.lastYear, row.actual, row.target]);
+        });
+
+
+        // Explicitly format all numerical columns (indices 1, 2, 3)
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1); // Last Year
+        formatter.format(data, 2); // Actual
+        formatter.format(data, 3); // Target
+
+
+        // Determine if slanting is needed
+        const numBars = data.getNumberOfRows(); // Use data.getNumberOfRows() on the DataTable
+        let hAxisSlanted = true;
+        let hAxisSlantedAngle = 45;
+        // For simplicity and to prevent awkward single-bar slanting:
+        if (numBars <= 1) {
+            hAxisSlanted = false;
+            hAxisSlantedAngle = 0;
+        }
+
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#e74c3c', '#f1c40f'],
+            vAxis: {
+                title: 'TCO2eq',
+                minValue: 0,
+                viewWindow: { min: 0, max: Math.ceil(maxMonthlyValue / 100) * 100 + (maxMonthlyValue > 0 ? 50 : 0) },
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+            },
+            hAxis: {
+                title: 'Month',
+                textStyle: { fontSize: 11 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+                slantedText: hAxisSlanted, // Dynamic slanting
+                slantedTextAngle: hAxisSlantedAngle, // Dynamic angle
+                maxTextLines: 1
+            },
+            bar: { groupWidth: '60%' },
+            legend: {
+              position: 'top',
+              alignment: 'center',
+              textStyle: { bold: true, italic: true }
+            },
+            chartArea: { top: 50, left: 80, right: 20, bottom: 100, width: '95%', height: '70%' },
+            series: {
+              0: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              1: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              2: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } }  
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}}, // Tooltip should use column format
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+
+        const chart = new google.visualization.ColumnChart(document.getElementById('monthlyGhgChart'));
+        chart.draw(data, options);
+    }
+
+
+    // Plant Total GHG Emission Column Chart (for Section 1)
+    function drawPlantGhgChart(plantData, maxPlantValue) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Plant');
+        data.addColumn('number', 'Last Year (2024)');
+        data.addColumn('number', 'Actual (2025)');  
+        data.addColumn('number', 'Target');
+
+
+        plantData.forEach(row => {
+            data.addRow([row.plant, row.lastYear, row.actual, row.target]);
+        });
+
+
+        // Explicitly format all numerical columns (indices 1, 2, 3)
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1); // Last Year
+        formatter.format(data, 2); // Actual
+        formatter.format(data, 3); // Target
+
+
+        // Determine if slanting is needed
+        const numBars = data.getNumberOfRows(); // Use data.getNumberOfRows() on the DataTable
+        let hAxisSlanted = true;
+        let hAxisSlantedAngle = 45;
+        if (numBars <= 1) {
+            hAxisSlanted = false;
+            hAxisSlantedAngle = 0;
+        }
+
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#e74c3c', '#f1c40f'],
+            vAxis: {
+                title: 'TCO2eq',
+                minValue: 0,
+                viewWindow: { min: 0, max: Math.ceil(maxPlantValue / 100) * 100 + (maxPlantValue > 0 ? 50 : 0) },
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+            },
+            hAxis: {
+                title: 'Plant',
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+                slantedText: hAxisSlanted, // Dynamic slanting
+                slantedTextAngle: hAxisSlantedAngle, // Dynamic angle
+                maxTextLines: 1
+            },
+            bar: { groupWidth: '60%' },
+            legend: {
+              position: 'top',
+              alignment: 'center',
+              textStyle: { bold: true, italic: true }
+            },
+            chartArea: { top: 50, left: 80, right: 20, bottom: 120, width: '95%', height: '65%' },
+            series: {
+              0: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              1: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              2: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } }  
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}}, // Tooltip should use column format
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+
+        const chart = new google.visualization.ColumnChart(document.getElementById('plantGhgChart'));
+        chart.draw(data, options);
+    }
+
+
+    // Scope 1 Category Pie Chart (for Section 2)
+    function drawScope1CategoryChart(scopeData) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Category');
+        data.addColumn('number', 'TCO2eq');
+
+        // Filter out slices with a value of 0
+        const filteredData = scopeData.slice(1).filter(row => row[1] > 0);
+
+        if (filteredData.length > 0) {
+            data.addRows(filteredData);
+        } else {
+            // Add a placeholder slice if no data is available
+            data.addRows([['No data available', 1]]);
+        }
+        
+        // Explicitly format the numerical column (index 1) for slices and tooltips
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1); // Apply to the TCO2eq column
+
+
+        const options = {
+            is3D: true,
+            colors: ['#2ecc71', '#e74c3c', '#f1c40f'], // bright green, bright red, yellow
+            pieSliceText: 'value', // 'value' will now automatically use the formatter
+            slices: {
+              0: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}},
+              1: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}},
+              2: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}}  
+            },
+            chartArea: {left: '5%', top: '5%', width: '90%', height: '90%'},
+            legend: {
+              position: 'labeled',
+              textStyle: {color: 'black', bold: true, italic: true, fontSize: 14}
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}}, // Tooltip should use column format
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+        // Special options for no data
+        if (filteredData.length === 0) {
+            options.pieSliceText = 'none';
+            options.tooltip.trigger = 'none';
+            options.legend.position = 'none';
+            options.colors = ['#cccccc'];
+        }
+
+
+        const chart = new google.visualization.PieChart(document.getElementById('scope1CategoryChart'));
+        chart.draw(data, options);
+    }
+
+
+    // Monthly Scope 1 Column Chart (for Section 2)
+    function drawMonthlyScope1Chart(monthlyData, maxMonthlyValue) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'Last Year (2024)');
+        data.addColumn('number', 'Actual (2025)');  
+        data.addColumn('number', 'Target');
+
+
+        monthlyData.forEach(row => {
+            data.addRow([row.month, row.lastYear, row.actual, row.target]);
+        });
+
+
+        // Explicitly format all numerical columns (indices 1, 2, 3)
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1); // Last Year
+        formatter.format(data, 2); // Actual
+        formatter.format(data, 3); // Target
+
+
+        // Determine if slanting is needed
+        const numBars = data.getNumberOfRows();
+        let hAxisSlanted = true;
+        let hAxisSlantedAngle = 45;
+        if (numBars <= 1) {
+            hAxisSlanted = false;
+            hAxisSlantedAngle = 0;
+        }
+
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#e74c3c', '#f1c40f'],
+            vAxis: {
+                title: 'TCO2eq',
+                minValue: 0,
+                viewWindow: { min: 0, max: Math.ceil(maxMonthlyValue / 100) * 100 + (maxMonthlyValue > 0 ? 50 : 0) },
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+            },
+            hAxis: {
+                title: 'Month',
+                textStyle: { fontSize: 11 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+                slantedText: hAxisSlanted, // Dynamic slanting
+                slantedTextAngle: hAxisSlantedAngle, // Dynamic angle
+                maxTextLines: 1
+            },
+            bar: { groupWidth: '60%' },
+            legend: {
+              position: 'top',
+              alignment: 'center',
+              textStyle: { bold: true, italic: true }
+            },
+            chartArea: { top: 50, left: 80, right: 20, bottom: 100, width: '95%', height: '70%' },
+            series: {
+              0: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              1: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              2: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } }  
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}}, // Tooltip should use column format
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+
+        const chart = new google.visualization.ColumnChart(document.getElementById('monthlyScope1Chart'));
+        chart.draw(data, options);
+    }
+
+
+    // Plant Total Scope 1 Column Chart (for Section 2)
+    function drawPlantScope1Chart(plantData, maxPlantValue) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Plant');
+        data.addColumn('number', 'Last Year (2024)');
+        data.addColumn('number', 'Actual (2025)');  
+        data.addColumn('number', 'Target');
+
+
+        plantData.forEach(row => {
+            data.addRow([row.plant, row.lastYear, row.actual, row.target]);
+        });
+
+
+        // Explicitly format all numerical columns (indices 1, 2, 3)
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1); // Last Year
+        formatter.format(data, 2); // Actual
+        formatter.format(data, 3); // Target
+
+
+        // Determine if slanting is needed
+        const numBars = data.getNumberOfRows();
+        let hAxisSlanted = true;
+        let hAxisSlantedAngle = 45;
+        if (numBars <= 1) {
+            hAxisSlanted = false;
+            hAxisSlantedAngle = 0;
+        }
+
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#e74c3c', '#f1c40f'],
+            vAxis: {
+                title: 'TCO2eq',
+                minValue: 0,
+                viewWindow: { min: 0, max: Math.ceil(maxPlantValue / 100) * 100 + (maxPlantValue > 0 ? 50 : 0) },
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+            },
+            hAxis: {
+                title: 'Plant',
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+                slantedText: hAxisSlanted, // Dynamic slanting
+                slantedTextAngle: hAxisSlantedAngle, // Dynamic angle
+                maxTextLines: 1
+            },
+            bar: { groupWidth: '60%' },
+            legend: {
+              position: 'top',
+              alignment: 'center',
+              textStyle: { bold: true, italic: true }
+            },
+            chartArea: { top: 50, left: 80, right: 20, bottom: 120, width: '95%', height: '65%' },
+            series: {
+              0: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              1: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              2: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } }  
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}}, // Tooltip should use column format
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+
+        const chart = new google.visualization.ColumnChart(document.getElementById('plantScope1Chart'));
+        chart.draw(data, options);
+    }
+
+    // NEW: Scope 2 Energy Mix Pie Chart
+    function drawScope2EnergyMixChart(scopeData) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Energy Type');
+        data.addColumn('number', 'TCO2eq');
+        
+        // Filter out slices with a value of 0
+        const filteredData = scopeData.slice(1).filter(row => row[1] > 0);
+        
+        if (filteredData.length > 0) {
+            data.addRows(filteredData);
+        } else {
+            // Add a placeholder slice if no data is available
+            data.addRows([['No data available', 1]]);
+        }
+
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1);
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#2ecc71'], // Non-Renewable: bright blue, Renewable: bright green
+            pieSliceText: 'value',
+            slices: {
+              0: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}},
+              1: {textStyle: {color: 'black', bold: true, italic: true, fontSize: 16}},
+            },
+            chartArea: {left: '5%', top: '5%', width: '90%', height: '90%'},
+            legend: {
+              position: 'labeled',
+              textStyle: {color: 'black', bold: true, italic: true, fontSize: 14}
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}},
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+        
+        // Special options for no data
+        if (filteredData.length === 0) {
+            options.pieSliceText = 'none';
+            options.tooltip.trigger = 'none';
+            options.legend.position = 'none';
+            options.colors = ['#cccccc'];
+        }
+
+        const chart = new google.visualization.PieChart(document.getElementById('scope2EnergyMixChart'));
+        chart.draw(data, options);
+    }
+
+    // NEW: Monthly Scope 2 Column Chart
+    function drawMonthlyScope2Chart(monthlyData, maxMonthlyValue) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'Last Year (2024)');
+        data.addColumn('number', 'Actual (2025)');  
+        data.addColumn('number', 'Target');
+
+
+        monthlyData.forEach(row => {
+            data.addRow([row.month, row.lastYear, row.actual, row.target]);
+        });
+
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1);
+        formatter.format(data, 2);
+        formatter.format(data, 3);
+
+        const numBars = data.getNumberOfRows();
+        let hAxisSlanted = true;
+        let hAxisSlantedAngle = 45;
+        if (numBars <= 1) {
+            hAxisSlanted = false;
+            hAxisSlantedAngle = 0;
+        }
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#e74c3c', '#f1c40f'],
+            vAxis: {
+                title: 'TCO2eq',
+                minValue: 0,
+                viewWindow: { min: 0, max: Math.ceil(maxMonthlyValue / 100) * 100 + (maxMonthlyValue > 0 ? 50 : 0) },
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+            },
+            hAxis: {
+                title: 'Month',
+                textStyle: { fontSize: 11 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+                slantedText: hAxisSlanted,
+                slantedTextAngle: hAxisSlantedAngle,
+                maxTextLines: 1
+            },
+            bar: { groupWidth: '60%' },
+            legend: {
+              position: 'top',
+              alignment: 'center',
+              textStyle: { bold: true, italic: true }
+            },
+            chartArea: { top: 50, left: 80, right: 20, bottom: 100, width: '95%', height: '70%' },
+            series: {
+              0: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              1: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              2: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } }  
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}},
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+        const chart = new google.visualization.ColumnChart(document.getElementById('monthlyScope2Chart'));
+        chart.draw(data, options);
+    }
+
+    // NEW: Plant Total Scope 2 Column Chart
+    function drawPlantScope2Chart(plantData, maxPlantValue) {
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Plant');
+        data.addColumn('number', 'Last Year (2024)');
+        data.addColumn('number', 'Actual (2025)');  
+        data.addColumn('number', 'Target');
+
+
+        plantData.forEach(row => {
+            data.addRow([row.plant, row.lastYear, row.actual, row.target]);
+        });
+
+        var formatter = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+        formatter.format(data, 1);
+        formatter.format(data, 2);
+        formatter.format(data, 3);
+
+        const numBars = data.getNumberOfRows();
+        let hAxisSlanted = true;
+        let hAxisSlantedAngle = 45;
+        if (numBars <= 1) {
+            hAxisSlanted = false;
+            hAxisSlantedAngle = 0;
+        }
+
+        const options = {
+            is3D: true,
+            colors: ['#3498db', '#e74c3c', '#f1c40f'],
+            vAxis: {
+                title: 'TCO2eq',
+                minValue: 0,
+                viewWindow: { min: 0, max: Math.ceil(maxPlantValue / 100) * 100 + (maxPlantValue > 0 ? 50 : 0) },
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+            },
+            hAxis: {
+                title: 'Plant',
+                textStyle: { fontSize: 12 },
+                titleTextStyle: { fontSize: 14, bold: true, italic: false },
+                slantedText: hAxisSlanted,
+                slantedTextAngle: hAxisSlantedAngle,
+                maxTextLines: 1
+            },
+            bar: { groupWidth: '60%' },
+            legend: {
+              position: 'top',
+              alignment: 'center',
+              textStyle: { bold: true, italic: true }
+            },
+            chartArea: { top: 50, left: 80, right: 20, bottom: 120, width: '95%', height: '65%' },
+            series: {
+              0: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              1: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } },
+              2: { dataLabel: { visible: true, position: 'out', textStyle: { color: 'black', fontSize: 14, bold: true } } }  
+            },
+            tooltip: {trigger: 'focus', textStyle: {fontSize: 12}},
+            animation: { duration: 1000, easing: 'out', startup: true }
+        };
+
+        const chart = new google.visualization.ColumnChart(document.getElementById('plantScope2Chart'));
+        chart.draw(data, options);
+    }
+  </script>
+</body>
+</html>
+
