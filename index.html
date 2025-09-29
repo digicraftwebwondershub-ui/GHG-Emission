@@ -192,6 +192,23 @@
       color: #34495e;
     }
 
+    .apply-filters-btn {
+      padding: 10px 20px;
+      border: none;
+      background-color: var(--main-green);
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      margin-left: 15px; /* Add some space between the last filter and the button */
+    }
+
+    .apply-filters-btn:hover {
+      background-color: #257a4a; /* A darker shade of the main green */
+      transform: translateY(-1px);
+    }
 
     .section-nav-buttons {
       margin-left: auto; /* Push buttons to the right */
@@ -825,6 +842,7 @@
           </div>
         </div>
       </div>
+      <button id="applyFiltersBtn" class="apply-filters-btn">Apply Filters</button>
       <div class="section-nav-buttons">
         <button id="btn-total-ghg" onclick="scrollToSection('total-ghg-section')">Total GHG</button>
         <button id="btn-scope1" onclick="scrollToSection('scope1-section')">Scope 1</button>
@@ -1263,6 +1281,7 @@
     const monthBtnText = document.getElementById('monthBtnText');
     const yearBtnText = document.getElementById('yearBtnText');
     const plantBtnText = document.getElementById('plantBtnText');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 
     const loadingSpinner = document.getElementById('loadingSpinner');
     const errorMessage = document.getElementById('errorMessage');
@@ -1433,9 +1452,6 @@
                 btnText.textContent = allText; // Fallback
             }
 
-            // Debounce updateDashboard call
-            clearTimeout(window.dashboardUpdateTimeout);
-            window.dashboardUpdateTimeout = setTimeout(updateDashboard, 500);
         });
 
         // Close dropdown when clicking outside
@@ -1486,6 +1502,9 @@
         setupMultiSelect(monthFilterContainer, monthFilterBtn, monthListItems, monthBtnText, 'All Months');
         setupMultiSelect(yearFilterContainer, yearFilterBtn, yearListItems, yearBtnText, 'All Years');
         setupMultiSelect(plantFilterContainer, plantFilterBtn, plantListItems, plantBtnText, 'All Plants');
+
+        // Add event listener for the apply button
+        applyFiltersBtn.addEventListener('click', updateDashboard);
     }
 
 
